@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	default-autowire="byName" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd    
+        http://www.springframework.org/schema/context     
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		">		
+
+	
+	<!-- web目录下的@controller类，扫描成bean -->		
+	<context:component-scan base-package="com.dsun.test.controller" />
+
+	<!-- spring mvc 将不会拦截此路径 暂时用不到  我先注释掉 -->
+	<!--<mvc:resources  mapping="res/**" location="/res/" cache-period="0"/>-->
+	<!-- 配置文件上传解析器 暂时不涉及到图片上传  我先注释掉-->
+	<!--<bean id="multipartResolver"-->
+				<!--class="org.springframework.web.multipart.commons.CommonsMultipartResolver"-->
+				<!--p:defaultEncoding="UTF-8"-->
+				<!--p:maxUploadSize="5242880"-->
+				<!--p:uploadTempDir="upload/temp"-->
+				<!--/>-->
+				
+	<!-- 将逻辑试图名解析成WEB-INF/目录下的试图资源 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/"/>
+		<property name="suffix" value=".jsp"/>
+		<property name="order" value="1" />
+	</bean>
+	
+
+
+	<!-- 定义看了转换器  用来转化数据格式  比如json格式、xml格式等-->
+	<!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+				<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+				<bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+			</list>
+		</property>
+	</bean> -->
+
+
+	<!-- 类 拦截 文档显示都已经过时了 -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="jsonConverter" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>application/json;charset=UTF-8</value>
+				<value>application/*+json;charset=UTF-8</value>				
+			</list>
+		</property>
+	</bean>
+	
+</beans>
